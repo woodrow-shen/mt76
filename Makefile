@@ -1,11 +1,15 @@
-EXTRA_CFLAGS += -Werror
+CC := arm-linux-gnueabihf-
 
-obj-m := mt76pci.o
+ifneq ($(KERNELRELEASE),)
+KDIR ?= /lib/modules/$(KERNELRELEASE)/build
+endif
 
-mt76pci-y := \
-	pci.o dma.o \
-	main.o init.o debugfs.o tx.o util.o \
-	core.o mac.o eeprom.o mcu.o phy.o \
-	trace.o
+KDIR ?= /workzone/Snappy-dev/ubuntu-snappy-armhf-fukuoka/kernel/
+#KDIR ?= /lib/modules/`uname -r`/build
 
-mt76pci-$(CONFIG_OF) += of.o
+default:
+		$(MAKE) ARCH=arm CROSS_COMPILE=$(CC) -C $(KDIR) M=$$PWD
+clean:
+		$(MAKE) ARCH=arm CROSS_COMPILE=$(CC) -C $(KDIR) M=$$PWD clean
+install:
+		$(MAKE) ARCH=arm CROSS_COMPILE=$(CC) -C $(KDIR) M=$$PWD modules_install
